@@ -1,1 +1,1 @@
-web: python3 ./Lesson-3/0_Deploying/BookmarkServer.py
+web: python3 ./public/BookmarkServer.py
