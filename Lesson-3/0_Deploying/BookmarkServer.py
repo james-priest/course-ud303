@@ -47,9 +47,11 @@ import os
 from urllib.parse import unquote, parse_qs
 
 memory = {
-    'google': 'http://www.google.com',
+    'google': 'http://google.com',
     'github': 'http://github.com',
-    'microsoft': 'http://microsoft.com'
+    'microsoft': 'http://microsoft.com',
+    'heroku': 'http://heroku.com',
+    'wiki': 'http://wikipedia.com'
 }
 
 form = '''<!DOCTYPE html>
@@ -114,7 +116,7 @@ class Shortener(http.server.BaseHTTPRequestHandler):
             self.send_header('Content-type', 'text/html')
             self.end_headers()
             # List the known associations in the form.
-            known = "\n".join("<a href='/{}'>{}</a> : {}".format(key, key, memory[key])
+            known = "\n".join("<a href='/{}' target='_blank'>{}</a> : {}".format(key, key, memory[key])
                               for key in sorted(memory.keys()))
             self.wfile.write(form.format(known).encode())
 
