@@ -55,7 +55,8 @@ memory = {
 }
 
 form = '''<!DOCTYPE html>
-<title>Bookmark Server</title>
+<title>Mini Bookmark Server</title>
+<h2>Mini Bookmark Server</h2>
 <form method="POST">
     <label>Short name:
         <input name="shortname" id="shortname">
@@ -92,6 +93,10 @@ def CheckURI(uri, timeout=5):
         # If the GET request raised an exception, it's not OK.
         return False
 
+def load_binary(file):
+    with open(file, 'rb') as file:
+        return file.read()
+
 class Shortener(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         # A GET request will either be for / (the root path) or for /some-name.
@@ -105,11 +110,17 @@ class Shortener(http.server.BaseHTTPRequestHandler):
                 self.send_header('Location', memory[name])
                 self.end_headers()
             else:
-                # We don't know that name! Send a 404 error.
-                self.send_response(404)
-                self.send_header('Content-type', 'text/plain; charset=utf-8')
-                self.end_headers()
-                self.wfile.write("I don't know '{}'.".format(name).encode())
+                if name == 'favicon.ico':
+                    self.send_response(200)
+                    self.send_header('Content-type', 'image/x-icon')
+                    self.end_headers()
+                    self.wfile.write(load_binary('favicon.ico'))
+                else:
+                    # We don't know that name! Send a 404 error.
+                    self.send_response(404)
+                    self.send_header('Content-type', 'text/plain; charset=utf-8')
+                    self.end_headers()
+                    self.wfile.write("I don't know '{}'.".format(name).encode())
         else:
             # Root path. Send the form.
             self.send_response(200)
